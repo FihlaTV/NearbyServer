@@ -1,10 +1,9 @@
-var express = require('express');
-var router = express.Router();
-
+const express = require('express');
+const router = express.Router();
 const request = require('request');
 
 const db = require('../../db');
-const token = require('../../token');
+const utils = require('../../utils');
 
 // Generate a random number
 const generateRandomNumber = (min, max) => {
@@ -41,7 +40,7 @@ const handleAuthentification = (field, value, new_user) => {
 }
 
 router.get('/loginWithAccountKit', (req, res, next) => {
-	let accesstoken = req.query.access_token;
+  let accesstoken = req.query.access_token;
 
   if (accesstoken) {
     let url = `https://graph.accountkit.com/v1.0/me/?access_token=${accesstoken}`;
@@ -67,7 +66,7 @@ router.get('/loginWithAccountKit', (req, res, next) => {
             return res.json({
               success: true,
               message: 'Enjoy and keep your token secret!',
-              token: token.create(user)
+              token: utils.createToken(user)
             });
           })
           .catch(error => {
@@ -121,7 +120,7 @@ router.get('/loginWithFacebook', function(req, res) {
             return res.json({
               success: true,
               message: 'Enjoy and keep your token secret!',
-              token: token.create(user)
+              token: utils.createToken(user)
             });
           })
           .catch(error => {

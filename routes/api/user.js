@@ -16,9 +16,14 @@ router.get('/all', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) => {
-	const userId = req.params.id
+	const userId = req.params.id;
   const queryString = "SELECT * FROM users WHERE id = ?"
-  db.query(queryString, [userId], (err, rows, fields) => {
+  db.query(queryString, [ userId ], (err, rows, fields) => {
+    if (err) {
+      console.log("Failed to query users: " + err)
+      res.sendStatus(500)
+      return
+    }
     res.json(rows)
   })
 });

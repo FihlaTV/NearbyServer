@@ -1,7 +1,8 @@
 /*
   This Database class enables to use promises instead
   of callbacks with the mysql module. This permits to
-  avoid the cascade callbacks in the code.
+  avoid cascade callbacks in code.
+  see https://codeburst.io/node-js-mysql-and-promises-4c3be599909b
 */
 
 'use strict';
