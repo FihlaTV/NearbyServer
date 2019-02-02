@@ -2,7 +2,6 @@
 
 // Configuration
 const port = 3000;
-const trusted_ip = '192.168.1.13';
 
 const Room_Type = {
   public : 0,
@@ -27,8 +26,8 @@ const app = express();
 app.disable("x-powered-by");
 
 // to log every request for debugging
-const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: 'a' })
-app.use(morgan("combined", { stream: accessLogStream }))
+const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), { flags: 'a' });
+app.use(morgan("combined", { stream: accessLogStream }));
 
 // to accept JSON and form urlencoded data from client
 app.use(bodyParser.json({ limit: "100mb" }));
@@ -79,7 +78,7 @@ io.on('connection', (client) => {
 
   console.log(user)
 
-  if (user/* && client.request.connection.remoteAddress == trusted_ip*/) {
+  if (user) {
     console.log(`A client has been authorized from IP ${client.request.connection.remoteAddress}!`);
 
     if (!users[user.id])
@@ -154,7 +153,7 @@ io.on('connection', (client) => {
         }
       };
 
-      console.log(new_message)
+      console.log(new_message);
 
       // everybody including the sender
       io.to(this.room).emit('new_message', new_message);

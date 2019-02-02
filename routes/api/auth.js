@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const request = require('request');
+const uuidv4 = require('uuid/v4');
 
 const db = require('../../db');
 const utils = require('../../utils');
@@ -39,8 +40,8 @@ const handleAuthentification = (field, value, new_user) => {
     })
 }
 
-router.get('/loginWithAccountKit', (req, res, next) => {
-  let accesstoken = req.query.access_token;
+router.post('/withAccountKit', (req, res, next) => {
+  let accesstoken = req.body.access_token;
 
   if (accesstoken) {
     let url = `https://graph.accountkit.com/v1.0/me/?access_token=${accesstoken}`;
@@ -52,12 +53,12 @@ router.get('/loginWithAccountKit', (req, res, next) => {
       else if(response.statusCode !== 200){
         res.json({ success: false, message : "Authentication failed" });
       }
-      else
-      {
+      else {
         let data = JSON.parse(body);
 
         // new user data
         const new_user = {
+          publicId: uuidv4(),
           phoneNumber: data.phone.number,
         }
 
@@ -85,12 +86,14 @@ router.get('/loginWithAccountKit', (req, res, next) => {
   }
 });
 
-router.get('/loginWithFacebook', function(req, res) {
-  let accesstoken = req.query.access_token;
+router.post('/withFacebook', (req, res) => {
+  let access_token = req.body.access_token;
+
+  console.log(access_token)
 
   if (accesstoken) {
     let fields = 'id,birthday,name,email,first_name,last_name,gender,is_verified,locale,picture.width(9999)';
-    let url = `https://graph.facebook.com/me?fields=${fields}&access_token=${accesstoken}`;
+    let url = `https://graph.facebook.com/me?fields=${fields}&access_token=${access_token}`;
 
     request(url, (error, response, body) => {
       if (error) {
@@ -104,6 +107,7 @@ router.get('/loginWithFacebook', function(req, res) {
 
         // new user data
         const new_user = {
+          publicId: uuidv4(),
           username: generateUsername(data.first_name, data.last_name),
           name: data.name,
           email: data.email,
