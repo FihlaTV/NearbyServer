@@ -5,7 +5,12 @@ let db;
 
 function createDatabase() {
   if (!db) {
-    db = new Database(config);
+    db = new Database({
+      "host" : "127.0.0.1",
+      "user" : "root",
+      "password": process.argv[2] || "password",
+      "database" : "nearby",
+    });
   }
   db.connect()
     .then(() => {
