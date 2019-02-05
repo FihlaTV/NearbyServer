@@ -47,6 +47,8 @@ const server = http.createServer(app).listen(port, () => {
 
 /* socket.io chat */
 
+console.log("Test")
+
 const io = require('socket.io')(server);
 
 let users = [];

@@ -41,10 +41,10 @@ const handleAuthentification = (field, value, new_user) => {
 }
 
 router.post('/withAccountKit', (req, res, next) => {
-  let accesstoken = req.body.access_token;
+  let access_token = req.body.access_token;
 
-  if (accesstoken) {
-    let url = `https://graph.accountkit.com/v1.0/me/?access_token=${accesstoken}`;
+  if (access_token) {
+    let url = `https://graph.accountkit.com/v1.0/me/?access_token=${access_token}`;
 
     request(url, (error, response, body) => {
       if (error) {
@@ -89,9 +89,7 @@ router.post('/withAccountKit', (req, res, next) => {
 router.post('/withFacebook', (req, res) => {
   let access_token = req.body.access_token;
 
-  console.log(access_token)
-
-  if (accesstoken) {
+  if (access_token) {
     let fields = 'id,birthday,name,email,first_name,last_name,gender,is_verified,locale,picture.width(9999)';
     let url = `https://graph.facebook.com/me?fields=${fields}&access_token=${access_token}`;
 
