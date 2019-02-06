@@ -13,19 +13,26 @@ router.get('/all', (req, res) => {
       return
     }
     res.json(rows)
-  })
+  });
 });
 
-router.put('/', check_auth(), (req, res) => {
-  const queryString = "UPDATE users SET Name=?,EMAIL=?,AADHAR=?,ROLE=?,NOTES=?,REQUESTFORSUPPLIER=?,PASSWORD=?,LOCATION=?,CREATEDBY=?,CREATEDON=?,MODIFIEDBY=?,MODIFIEDON=? WHERE USER_MOBILE=?"
-  db.query(queryString, (err, rows, fields) => {
+router.put('/', check_auth, (req, res) => {
+  const queryString = "UPDATE users SET name = ?, username = ?, birthday = ? WHERE public_id = ?"
+  db.query(queryString, [ req.body.user.name, req.body.user.username, new Date(req.body.user.birthday), req.public_id ], (err, result) => {
     if (err) {
-      console.log("Failed to query users: " + err)
-      res.sendStatus(500)
+      console.log("Failed to update the user : " + err)
+
+      res.json({
+        success: false,
+        message: 'Failure to update the user!'
+      });
       return
     }
-    res.json(rows)
-  })
+    res.json({
+      success: true,
+      message: 'User updated successfully!'
+    });
+  });
 });
 
 /*

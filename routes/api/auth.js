@@ -56,24 +56,27 @@ router.post('/withAccountKit', (req, res, next) => {
       else {
         let data = JSON.parse(body);
 
-        // new user data
+        // new user data from accountkit
         const new_user = {
-          publicId: uuidv4(),
-          phoneNumber: data.phone.number,
+          public_id: uuidv4(),
+          phone_number: data.phone.number,
         }
 
-        handleAuthentification("phoneNumber", data.phone.number, new_user)
+        handleAuthentification("phone_number", data.phone.number, new_user)
           .then((user) => {
             return res.json({
               success: true,
               message: 'Enjoy and keep your token secret!',
-              token: utils.createToken(user)
+              token: utils.createToken(user),
+              user: user
             });
           })
           .catch(error => {
+            console.error(error);
+
             return res.json({
               success: false,
-              message: error
+              message: 'Signup with AccountKit failed!'
             });
           })
       }
@@ -103,18 +106,17 @@ router.post('/withFacebook', (req, res) => {
       else {
         let data = JSON.parse(body);
 
-        // new user data
+        // new user data from facebook
         const new_user = {
-          publicId: uuidv4(),
+          public_id: uuidv4(),
+          email: data.email,
           username: generateUsername(data.first_name, data.last_name),
           name: data.name,
-          email: data.email,
-          picture: data.picture.data.url ? data.picture.data.url : "",
+          picture_url: data.picture.data.url ? data.picture.data.url : '',
           gender: data.gender,
           lang: data.locale ? data.locale : '',
-          verified: data.is_verified ? data.is_verified : false,
-          birthday: new Date(data.birthday),
-          facebookId: data.id,
+          is_verified: data.is_verified ? 1 : 0,
+          birthday: new Date(data.birthday)
         }
 
         handleAuthentification("email", data.email, new_user)
@@ -122,13 +124,16 @@ router.post('/withFacebook', (req, res) => {
             return res.json({
               success: true,
               message: 'Enjoy and keep your token secret!',
-              token: utils.createToken(user)
+              token: utils.createToken(user),
+              user: user
             });
           })
           .catch(error => {
+            console.error(error);
+
             return res.json({
               success: false,
-              message: error
+              message: 'Signup with Facebook failed!'
             });
           })
       }
