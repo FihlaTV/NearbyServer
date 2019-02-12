@@ -18,7 +18,12 @@ router.get('/all', (req, res) => {
 
 router.put('/', check_auth, (req, res) => {
   const queryString = "UPDATE users SET name = ?, username = ?, birthday = ? WHERE public_id = ?"
-  db.query(queryString, [ req.body.user.name, req.body.user.username, new Date(req.body.user.birthday), req.public_id ], (err, result) => {
+  const user = {
+    name: req.body.user.name,
+    username: req.body.user.username.toLowerCase(),
+    birthday: new Date(req.body.user.birthday)
+  }
+  db.query(queryString, [ user.name, user.username, user.birthday, req.public_id ], (err, result) => {
     if (err) {
       console.log("Failed to update the user : " + err)
 
