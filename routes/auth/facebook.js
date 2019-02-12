@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
       }
 
       const user = await User.findOne({
-          attributes: ['public_id', 'email', 'phone_number', 'first_name', 'username', 'birthday', 'gender', 'biography', 'is_private', 'is_verified'],
+          attributes: ['public_id', 'email', 'phone_number', 'name', 'username', 'birthday', 'gender', 'biography', 'is_private', 'is_verified'],
           where: { email: data.email }
       });
 
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
         return res.status(200).json({ user : user, token: utils.create_token(user.public_id) });
       }
 
-      const username = await utils.generateUsername(data.first_name);
+      const username = await utils.generate_username(data.first_name);
 
       const new_user = await User.create({
         public_id: uuidv4(),
@@ -49,11 +49,13 @@ router.post('/', async (req, res) => {
       delete new_user.id
 
       return res.status(200).json({ user: new_user, token: utils.create_token(new_user.public_id) });
-      
+
     } else {
       return res.status(400).json({ success: false, message: 'Access Token missing!' });
     }
   } catch(error) {
+    console.log(error);
+
     return res.status(400).json({ success: false, message : `Internal error.`});
   }
 });

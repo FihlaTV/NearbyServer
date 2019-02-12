@@ -19,7 +19,7 @@ const utils = {
     });
   },
   generate_username: async (name) => {
-    let potential_username = name + random_range(1, 9999);
+    let potential_username = (name + random_range(1, 9999)).toLowerCase();
 
     const user = await User.findOne({
       attributes: [ 'username' ],

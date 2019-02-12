@@ -69,7 +69,7 @@ io.on('connection', (client) => {
   console.log(`A client is connected! (${clientID})`);
 
   // decode the token
-  const user = utils.decodeToken(token);
+  const user = utils.decode_token(token);
 
   console.log(user)
 

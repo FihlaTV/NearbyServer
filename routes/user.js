@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-const db = require('../../db');
-const check_auth = require("../../middlewares/check_auth.js");
+//const db = require('../../db');
+const check_auth = require("../middlewares/check_auth.js");
 
+/*
 router.get('/all', (req, res) => {
   const queryString = "SELECT * FROM users"
   db.query(queryString, (err, rows, fields) => {
@@ -40,7 +41,6 @@ router.put('/', check_auth, (req, res) => {
   });
 });
 
-/*
 router.get('/:id', (req, res, next) => {
   const queryString = "SELECT * FROM users WHERE id = ?"
   db.query(queryString, [ req.params.id ], (err, rows, fields) => {
@@ -53,5 +53,6 @@ router.get('/:id', (req, res, next) => {
   })
 });
 */
+
 
 module.exports = router;

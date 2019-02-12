@@ -16,7 +16,6 @@ const User = db.define('user', {
   },
   email: {
     type: Sequelize.STRING(32),
-    allowNull: false,
     unique: true
   },
   phone_number: {
@@ -25,16 +24,16 @@ const User = db.define('user', {
   },
   username: {
     type: Sequelize.STRING(32),
-    allowNull: false,
     unique: true
   },
-  first_name: {
+  name: {
     type: Sequelize.STRING(32),
-    allowNull: false
+    allowNull: false,
+    defaultValue: "Unknown"
   },
   birthday: {
     type: Sequelize.DATE,
-    allowNull: false
+    allowNull: true
   },
   gender: {
     type: Sequelize.STRING(32),
@@ -58,7 +57,7 @@ const User = db.define('user', {
   score: {
     type: Sequelize.INTEGER,
     allowNull: false,
-    default: 0
+    defaultValue: 0
   }
 });
 
