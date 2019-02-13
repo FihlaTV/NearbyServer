@@ -24,25 +24,32 @@ const User = db.define('user', {
   },
   username: {
     type: Sequelize.STRING(32),
-    unique: true
+    unique: true,
+    allowNull: false,
+    defaultValue: ''
   },
   name: {
     type: Sequelize.STRING(32),
     allowNull: false,
-    defaultValue: "Unknown"
+    defaultValue: ''
   },
-  birthday: {
-    type: Sequelize.DATE,
+  picture_url: {
+    type: Sequelize.STRING(255),
     allowNull: true
   },
   gender: {
-    type: Sequelize.STRING(32),
-    allowNull: true
+    type: Sequelize.ENUM('male', 'female', 'none'),
+    allowNull: false,
+    defaultValue: 'none'
   },
   biography: {
     type: Sequelize.STRING(255),
     allowNull: false,
-    defaultValue: ""
+    defaultValue: ''
+  },
+  birthday: {
+    type: Sequelize.DATE,
+    allowNull: true
   },
   is_private: {
     type: Sequelize.BOOLEAN,
@@ -50,6 +57,16 @@ const User = db.define('user', {
     defaultValue: false
   },
   is_verified: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  is_active: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  is_banned: {
     type: Sequelize.BOOLEAN,
     allowNull: false,
     defaultValue: false

@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
   } catch(error) {
     console.log(error);
 
-    return res.status(400).json({ success: false, message : `Internal error.`});
+    return res.status(400).json({ success: false, message: `Internal error.`});
   }
 });
 

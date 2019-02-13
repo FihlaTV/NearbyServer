@@ -4,6 +4,9 @@ const db = new Sequelize('nearby', 'root', 'o5jQjrQ0', {
   host: 'localhost',
   dialect: 'mysql',
   operatorsAliases: false,
+  define:{
+    underscored: true
+  },
   pool: {
     max: 5,
     min: 0,

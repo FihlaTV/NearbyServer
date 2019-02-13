@@ -8,8 +8,7 @@ const check_auth = (req, res, next) => {
     jwt.verify(token, config.secret, (err, decoded) => {
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });
-      }
-      else {
+      } else {
         req.public_id = decoded.public_id;
         next();
       }

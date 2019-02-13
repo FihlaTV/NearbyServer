@@ -31,6 +31,21 @@ const utils = {
     } else {
       return potential_username;
     }
+  },
+  identify_channel_type: (identifier) => {
+  	let channel_type = Channel_Type.public; // by default
+
+  	if (identifier.match(/^\#[a-z0-9-]{2,20}$/)) {
+      channel_type = Channel_Type.public;
+    }
+  	else if (identifier.match(/^\#\([a-z0-9-]{2,20}\)$/)) {
+      channel_type = Channel_Type.private;
+    }
+  	else {
+      throw "The channel identifier doesn't correspond to a valid syntax!";
+    }
+
+  	return channel_type;
   }
 };
 module.exports = utils;

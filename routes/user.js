@@ -1,58 +1,81 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
-//const db = require('../../db');
 const check_auth = require("../middlewares/check_auth.js");
 
-/*
-router.get('/all', (req, res) => {
-  const queryString = "SELECT * FROM users"
-  db.query(queryString, (err, rows, fields) => {
-    if (err) {
-      console.log("Failed to query users: " + err)
-      res.sendStatus(500)
-      return
-    }
-    res.json(rows)
-  });
+const User = require('../models/user');
+
+router.get('/getall', async (req, res) => {
+  try {
+    const users = await User.findAll();
+
+    return res.status(200).json({ success: true, users: users });
+  } catch(error) {
+    console.log(error);
+
+    return res.status(400).json({ success: false, message: `Internal error.`});
+  }
 });
 
 router.put('/', check_auth, (req, res) => {
-  const queryString = "UPDATE users SET name = ?, username = ?, birthday = ? WHERE public_id = ?"
-  const user = {
-    name: req.body.user.name,
-    username: req.body.user.username.toLowerCase(),
-    birthday: new Date(req.body.user.birthday)
+  try {
+    const { name, username, birthday } = req.body.user;
+
+  } catch(error) {
+    console.log(error);
+
+    return res.status(400).json({ success: false, message: `Internal error.`});
   }
-  db.query(queryString, [ user.name, user.username, user.birthday, req.public_id ], (err, result) => {
-    if (err) {
-      console.log("Failed to update the user : " + err)
+});
 
-      res.json({
-        success: false,
-        message: 'Failure to update the user!'
-      });
-      return
-    }
-    res.json({
-      success: true,
-      message: 'User updated successfully!'
+router.get('/get/:public_id', async (req, res) => {
+  try {
+    const { public_id } = req.params;
+
+    const user = await User.findOne({
+        attributes: ['public_id', 'email', 'phone_number', 'name', 'username', 'birthday', 'gender', 'biography', 'is_private', 'is_verified'],
+        where: { public_id: public_id }
     });
-  });
+
+    return res.status(200).json({ success: true, user: user });
+  } catch(error) {
+    console.log(error);
+
+    return res.status(400).json({ success: false, message: `Internal error.`});
+  }
 });
 
-router.get('/:id', (req, res, next) => {
-  const queryString = "SELECT * FROM users WHERE id = ?"
-  db.query(queryString, [ req.params.id ], (err, rows, fields) => {
-    if (err) {
-      console.log("Failed to query user: " + err)
-      res.sendStatus(500)
-      return
+router.get('/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    q = q.toLowerCase();
+
+    if (!q) {
+      return res.status(200).json({ success: false, users: null, message: 'You must query a non empty term!' });
     }
-    res.json(rows)
-  })
+
+    const users = await User.findAll({
+        attributes: ['public_id', 'email', 'phone_number', 'name', 'username', 'birthday', 'gender', 'biography', 'is_private', 'is_verified'],
+        where: {
+          [Op.or]: [
+            { username: { [Op.like]: `%${q}%` } },
+            { name: { [Op.like]: `%${q}%` } }
+          ]
+        },
+        order: [['createdAt', 'DESC']],
+        limit: 50
+    });
+
+    return res.status(200).json({ success: true, users: users });
+  } catch(error) {
+    console.log(error);
+
+    return res.status(400).json({ success: false, message: `Internal error.`});
+  }
 });
-*/
 
 
 module.exports = router;
