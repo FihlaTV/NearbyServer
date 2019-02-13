@@ -5,13 +5,24 @@ const Op = Sequelize.Op;
 
 const check_auth = require("../middlewares/check_auth.js");
 
-const User = require('../models/user');
+const Channel = require('../models/channel');
 
 router.get('/getall', async (req, res) => {
   try {
-    const users = await User.findAll();
+    const channels = await Channel.findAll();
 
-    return res.status(200).json({ success: true, users: users });
+    return res.status(200).json({ success: true, channels: channels });
+  } catch(error) {
+    console.log(error);
+
+    return res.status(400).json({ success: false, message: `Internal error.`});
+  }
+});
+
+router.post('/', check_auth, (req, res) => {
+  try {
+    const { name, username, birthday } = req.body.user;
+
   } catch(error) {
     console.log(error);
 
@@ -30,16 +41,16 @@ router.put('/', check_auth, (req, res) => {
   }
 });
 
-router.get('/get/:public_id', async (req, res) => {
+router.get('/get/:public_id', check_auth, async (req, res) => {
   try {
     const { public_id } = req.params;
 
-    const user = await User.findOne({
-        attributes: [ 'public_id', 'email', 'phone_number', 'name', 'username', 'birthday', 'gender', 'biography', 'is_private', 'is_verified', 'created_at' ],
+    const channel = await Channel.findOne({
+        attributes: [ 'public_id', 'identifier', 'name', 'type', 'capacity', 'status', 'is_read_only', 'created_at' ],
         where: { public_id: public_id }
     });
 
-    return res.status(200).json({ success: true, user: user });
+    return res.status(200).json({ success: true, channel: channel });
   } catch(error) {
     console.log(error);
 
@@ -47,7 +58,7 @@ router.get('/get/:public_id', async (req, res) => {
   }
 });
 
-router.get('/search', async (req, res) => {
+router.get('/search', check_auth, async (req, res) => {
   try {
     const { q } = req.query;
 
@@ -57,11 +68,11 @@ router.get('/search', async (req, res) => {
       return res.status(200).json({ success: false, users: null, message: 'You must query a non empty term!' });
     }
 
-    const users = await User.findAll({
-        attributes: [ 'public_id', 'email', 'phone_number', 'name', 'username', 'birthday', 'gender', 'biography', 'is_private', 'is_verified', 'created_at' ],
+    const channels = await Channel.findAll({
+        attributes: [ 'public_id', 'identifier', 'name', 'type', 'capacity', 'status', 'is_read_only', 'created_at' ],
         where: {
           [Op.or]: [
-            { username: { [Op.like]: `%${q}%` } },
+            { identifier: { [Op.like]: `%${q}%` } },
             { name: { [Op.like]: `%${q}%` } }
           ]
         },
@@ -69,7 +80,7 @@ router.get('/search', async (req, res) => {
         limit: 8
     });
 
-    return res.status(200).json({ success: true, users: users });
+    return res.status(200).json({ success: true, channels: channels });
   } catch(error) {
     console.log(error);
 

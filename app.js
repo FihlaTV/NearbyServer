@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // define routes
 app.use('/api/auth', require('./routes/auth'));
 app.use("/api/user", require("./routes/user"));
+app.use("/api/channel", require("./routes/channel"));
 
 // 404
 app.use((req, res, next) => {
